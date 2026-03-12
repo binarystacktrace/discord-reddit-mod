@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "mappings": {
+    "1481687465122074644": {
+      "channelId": "1481687465122074644",
+      "guildId": "533222954444783617",
+      "subreddit": "indianmemer",
+      "liveFeedType": "new",
+      "liveItemType": "posts",
+      "liveMinReports": 0,
+      "liveDigestMinutes": 0,
+      "liveLastSeenNew": "t3_1rs2y7a",
+      "liveQueueSeenIds": [],
+      "updatedAt": "2026-03-12T16:40:08.745Z"
+    },
+    "1481693534753919157": {
+      "channelId": "1481693534753919157",
+      "guildId": "1401538468479238194",
+      "subreddit": "indianmemer",
+      "liveFeedType": "new",
+      "liveItemType": "posts",
+      "liveMinReports": 0,
+      "liveDigestMinutes": 0,
+      "liveLastSeenNew": "t3_1rs2y7a",
+      "liveQueueSeenIds": [],
+      "updatedAt": "2026-03-12T16:54:38.109Z"
+    },
+    "1481722051319566375": {
+      "channelId": "1481722051319566375",
+      "guildId": "533222954444783617",
+      "subreddit": "indianmemer",
+      "liveFeedType": "new",
+      "liveItemType": "comments",
+      "liveMinReports": 0,
+      "liveDigestMinutes": 0,
+      "liveLastSeenNew": "t1_oa4kuc0",
+      "liveQueueSeenIds": [],
+      "updatedAt": "2026-03-12T21:03:52.752Z"
+    }
+  }
+}
