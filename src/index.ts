@@ -56,6 +56,7 @@ type RedditThingKind = "t1" | "t3" | "unknown";
 const liveLastSeenNewByChannel = new Map<string, string>();
 const liveQueueSeenByChannel = new Map<string, Set<string>>();
 const liveDigestLastSentByChannel = new Map<string, number>();
+const liveAccessDisabledChannels = new Set<string>();
 let livePollingStarted = false;
 
 type PendingUserAction = {
@@ -3165,11 +3166,48 @@ async function pollLiveChannels(): Promise<void> {
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
+
+      if (isPermanentDiscordAccessError(error)) {
+        const channelKey = `${mapping.channelId}:${mapping.subreddit}`;
+        if (!liveAccessDisabledChannels.has(channelKey)) {
+          liveAccessDisabledChannels.add(channelKey);
+          console.warn(
+            `Live polling disabled for channel ${mapping.channelId} / r/${mapping.subreddit} due to missing Discord access.`,
+          );
+        }
+        await subredditStore.setLiveFeedTypeForChannel(
+          mapping.channelId,
+          "off",
+        );
+        liveLastSeenNewByChannel.delete(mapping.channelId);
+        liveQueueSeenByChannel.delete(mapping.channelId);
+        liveDigestLastSentByChannel.delete(mapping.channelId);
+        continue;
+      }
+
       console.error(
         `Live polling failed for channel ${mapping.channelId} / r/${mapping.subreddit}: ${message}`,
       );
     }
   }
+}
+
+function isPermanentDiscordAccessError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const maybeCode = (error as { code?: unknown }).code;
+  if (maybeCode === 50001 || maybeCode === 10003) {
+    return true;
+  }
+
+  const message =
+    error instanceof Error ? error.message : String(error).toLowerCase();
+  return (
+    message.toLowerCase().includes("missing access") ||
+    message.toLowerCase().includes("unknown channel")
+  );
 }
 
 async function pollOneChannel(
