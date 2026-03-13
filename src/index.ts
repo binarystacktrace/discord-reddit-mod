@@ -46,6 +46,12 @@ const REASON_MODAL_PREFIX = "reddit-reason";
 const USER_CONFIRM_MODAL_PREFIX = "reddit-user-confirm";
 const FLAIR_MODAL_PREFIX = "reddit-flair";
 const RECENT_WINDOWS = ["24h", "7d", "30d", "all"] as const;
+const DEFAULT_FEED_MODE = "threaded";
+const DEFAULT_ITEM_TYPE: FeedItemType = "posts";
+const DEFAULT_RECENT_WINDOW: RecentWindow = "24h";
+const DEFAULT_BACKFILL_COUNT = 5;
+const DEFAULT_ACTIVITY_LIMIT = 5;
+const DEFAULT_AUDIT_LIMIT = 20;
 type RecentWindow = (typeof RECENT_WINDOWS)[number];
 
 type FeedMode = "queue" | "reports" | "recent" | "search" | "combined";
@@ -182,7 +188,7 @@ async function handleChatCommand(
         const sourceLabel =
           resolution.source === "channel" ? "channel mapping" : "default";
         const feedTypeLabel = mapping?.liveFeedType ?? "off";
-        const itemTypeLabel = mapping?.liveItemType ?? "posts";
+        const itemTypeLabel = mapping?.liveItemType ?? DEFAULT_ITEM_TYPE;
         const pingRoleLabel = mapping?.livePingRoleId
           ? `<@&${mapping.livePingRoleId}>`
           : "off";
@@ -220,7 +226,7 @@ async function handleChatCommand(
         const description = mappings
           .map(
             (m) =>
-              `<#${m.channelId}> → r/${m.subreddit} | live: **${m.liveFeedType ?? "off"}** (${m.liveItemType ?? "posts"}) | ping: ${m.livePingRoleId ? `<@&${m.livePingRoleId}>` : "off"} | min-reports: ${m.liveMinReports ?? 0} | digest: ${(m.liveDigestMinutes ?? 0) > 0 ? `${m.liveDigestMinutes}m` : "off"} | webhook: ${m.liveWebhookUrl ? "on" : "off"}`,
+              `<#${m.channelId}> → r/${m.subreddit} | live: **${m.liveFeedType ?? "off"}** (${m.liveItemType ?? DEFAULT_ITEM_TYPE}) | ping: ${m.livePingRoleId ? `<@&${m.livePingRoleId}>` : "off"} | min-reports: ${m.liveMinReports ?? 0} | digest: ${(m.liveDigestMinutes ?? 0) > 0 ? `${m.liveDigestMinutes}m` : "off"} | webhook: ${m.liveWebhookUrl ? "on" : "off"}`,
           )
           .join("\n")
           .slice(0, 1900);
@@ -241,7 +247,7 @@ async function handleChatCommand(
         const typeRaw = interaction.options.getString("type") ?? "new";
         const feedType = parseLiveFeedType(typeRaw);
         const itemType = parseFeedItemType(
-          interaction.options.getString("itemtype") ?? "posts",
+          interaction.options.getString("itemtype") ?? DEFAULT_ITEM_TYPE,
         );
         const pingRole = interaction.options.getRole("ping_role") ?? undefined;
         const minReports = interaction.options.getInteger("min_reports") ?? 0;
@@ -340,7 +346,7 @@ async function handleChatCommand(
           break;
         }
         const feedType = mapping.liveFeedType ?? "off";
-        const itemType = mapping.liveItemType ?? "posts";
+        const itemType = mapping.liveItemType ?? DEFAULT_ITEM_TYPE;
         const pingRoleLabel = mapping.livePingRoleId
           ? `<@&${mapping.livePingRoleId}>`
           : "off";
@@ -398,9 +404,11 @@ async function handleChatCommand(
         const subreddit = await requireSubredditForChannel(
           interaction.channelId,
         );
-        const count = interaction.options.getInteger("count") ?? 5;
+        const count =
+          interaction.options.getInteger("count") ?? DEFAULT_BACKFILL_COUNT;
         const windowRaw =
-          interaction.options.getString("window")?.toLowerCase() ?? "24h";
+          interaction.options.getString("window")?.toLowerCase() ??
+          DEFAULT_RECENT_WINDOW;
         const window = parseRecentWindow(windowRaw);
 
         const page = await reddit.getRecentPostsPage(subreddit, count);
@@ -456,9 +464,9 @@ async function handleChatCommand(
         const subreddit = await requireSubredditForChannel(
           interaction.channelId,
         );
-        const mode = interaction.options.getString("mode") ?? "threaded";
+        const mode = interaction.options.getString("mode") ?? DEFAULT_FEED_MODE;
         const itemType = parseFeedItemType(
-          interaction.options.getString("itemtype") ?? "posts",
+          interaction.options.getString("itemtype") ?? DEFAULT_ITEM_TYPE,
         );
         const page = await reddit.getModQueuePage(subreddit, limit);
         const filteredItems = filterItemsByType(page.items, itemType);
@@ -520,9 +528,9 @@ async function handleChatCommand(
         const subreddit = await requireSubredditForChannel(
           interaction.channelId,
         );
-        const mode = interaction.options.getString("mode") ?? "threaded";
+        const mode = interaction.options.getString("mode") ?? DEFAULT_FEED_MODE;
         const itemType = parseFeedItemType(
-          interaction.options.getString("itemtype") ?? "posts",
+          interaction.options.getString("itemtype") ?? DEFAULT_ITEM_TYPE,
         );
         const page = await reddit.getReportsPage(subreddit, limit);
         const filteredItems = filterItemsByType(page.items, itemType);
@@ -585,11 +593,12 @@ async function handleChatCommand(
           interaction.channelId,
         );
         const windowRaw =
-          interaction.options.getString("window")?.toLowerCase() ?? "24h";
+          interaction.options.getString("window")?.toLowerCase() ??
+          DEFAULT_RECENT_WINDOW;
         const window = parseRecentWindow(windowRaw);
-        const mode = interaction.options.getString("mode") ?? "threaded";
+        const mode = interaction.options.getString("mode") ?? DEFAULT_FEED_MODE;
         const itemType = parseFeedItemType(
-          interaction.options.getString("itemtype") ?? "posts",
+          interaction.options.getString("itemtype") ?? DEFAULT_ITEM_TYPE,
         );
         const page = await getRecentPageForItemType(subreddit, limit, itemType);
         const items = filterRecentItemsByWindow(page.items, window);
@@ -654,11 +663,11 @@ async function handleChatCommand(
         const subreddit = await requireSubredditForChannel(
           interaction.channelId,
         );
-        const mode = interaction.options.getString("mode") ?? "threaded";
+        const mode = interaction.options.getString("mode") ?? DEFAULT_FEED_MODE;
         const query = interaction.options.getString("query", true).trim();
         const author = interaction.options.getString("author") ?? undefined;
         const itemType = parseFeedItemType(
-          interaction.options.getString("itemtype") ?? "posts",
+          interaction.options.getString("itemtype") ?? DEFAULT_ITEM_TYPE,
         );
         const items = await reddit.searchPosts(subreddit, limit, {
           query,
@@ -715,9 +724,9 @@ async function handleChatCommand(
         const subreddit = await requireSubredditForChannel(
           interaction.channelId,
         );
-        const mode = interaction.options.getString("mode") ?? "threaded";
+        const mode = interaction.options.getString("mode") ?? DEFAULT_FEED_MODE;
         const itemType = parseFeedItemType(
-          interaction.options.getString("itemtype") ?? "posts",
+          interaction.options.getString("itemtype") ?? DEFAULT_ITEM_TYPE,
         );
         const [queuePage, reportsPage] = await Promise.all([
           reddit.getModQueuePage(subreddit, limit),
@@ -838,7 +847,8 @@ async function handleChatCommand(
         );
         const username = interaction.options.getString("username", true);
         const activityLimit =
-          interaction.options.getInteger("activity_limit") ?? 5;
+          interaction.options.getInteger("activity_limit") ??
+          DEFAULT_ACTIVITY_LIMIT;
         await interaction.editReply({
           embeds: [
             await buildUserInfoEmbedForUsername(
@@ -986,7 +996,7 @@ async function handleChatCommand(
         const moderator = interaction.options.getUser("moderator") ?? undefined;
         const entries = await auditStore.query({
           guildId: interaction.guildId ?? undefined,
-          limit: interaction.options.getInteger("limit") ?? 20,
+          limit: interaction.options.getInteger("limit") ?? DEFAULT_AUDIT_LIMIT,
           action,
           moderatorId: moderator?.id,
         });
@@ -3130,7 +3140,7 @@ async function pollLiveChannels(): Promise<void> {
   for (const mapping of liveMappings) {
     try {
       const feedType = mapping.liveFeedType;
-      const itemType = mapping.liveItemType ?? "posts";
+      const itemType = mapping.liveItemType ?? DEFAULT_ITEM_TYPE;
       const minReports = mapping.liveMinReports ?? 0;
       const webhookUrl = mapping.liveWebhookUrl;
       if (feedType === "new" || feedType === "both") {

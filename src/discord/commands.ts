@@ -1,4 +1,5 @@
 import {
+  PermissionFlagsBits,
   SlashCommandBuilder,
   SlashCommandIntegerOption,
   SlashCommandStringOption,
@@ -12,6 +13,7 @@ const modeOption = (
     .setDescription(
       "threaded: one message per item (default). list: all in one message.",
     )
+    .setRequired(false)
     .addChoices(
       { name: "threaded (default, one per item)", value: "threaded" },
       { name: "list", value: "list" },
@@ -23,6 +25,7 @@ const windowOption = (
   option
     .setName("window")
     .setDescription("Time window filter")
+    .setRequired(false)
     .addChoices(
       { name: "24 hours", value: "24h" },
       { name: "7 days", value: "7d" },
@@ -36,6 +39,7 @@ const limitOption = (
   option
     .setName("limit")
     .setDescription("Number of items (1-25)")
+    .setRequired(false)
     .setMinValue(1)
     .setMaxValue(25);
 
@@ -45,6 +49,7 @@ const itemTypeOption = (
   option
     .setName("itemtype")
     .setDescription("Item type filter (default: posts)")
+    .setRequired(false)
     .addChoices(
       { name: "posts (default)", value: "posts" },
       { name: "comments", value: "comments" },
@@ -56,6 +61,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("sub")
     .setDescription("Manage subreddit channel mapping")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((sub) =>
       sub
         .setName("set")
@@ -87,6 +93,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("live")
     .setDescription("Live feed configuration for this channel")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((sub) =>
       sub
         .setName("on")
@@ -95,6 +102,7 @@ export const slashCommands = [
           o
             .setName("type")
             .setDescription("Which content to stream automatically")
+            .setRequired(false)
             .addChoices(
               { name: "New posts (default)", value: "new" },
               { name: "Mod queue + reports", value: "modqueue" },
@@ -107,7 +115,8 @@ export const slashCommands = [
             .setName("ping_role")
             .setDescription(
               "Optional role to ping for live mod queue/report items",
-            ),
+            )
+            .setRequired(false),
         )
         .addIntegerOption((o) =>
           o
@@ -115,6 +124,7 @@ export const slashCommands = [
             .setDescription(
               "Only alert for items with at least this many reports",
             )
+            .setRequired(false)
             .setMinValue(0)
             .setMaxValue(25),
         )
@@ -141,6 +151,7 @@ export const slashCommands = [
           o
             .setName("count")
             .setDescription("How many posts to backfill (1-25)")
+            .setRequired(false)
             .setMinValue(1)
             .setMaxValue(25),
         )
@@ -164,6 +175,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("feed")
     .setDescription("Browse mod feed for this channel's subreddit")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((sub) =>
       sub
         .setName("status")
@@ -226,6 +238,7 @@ export const slashCommands = [
             .setDescription(
               "threaded: one message per item (default). list: all in one message.",
             )
+            .setRequired(false)
             .addChoices(
               { name: "threaded (default)", value: "threaded" },
               { name: "list", value: "list" },
@@ -237,6 +250,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("approve")
     .setDescription("Approve a Reddit post or comment by ID")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addStringOption((o) =>
       o.setName("id").setDescription("Fullname or short ID").setRequired(true),
     ),
@@ -244,6 +258,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("remove")
     .setDescription("Remove a Reddit post or comment by ID")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addStringOption((o) =>
       o.setName("id").setDescription("Fullname or short ID").setRequired(true),
     ),
@@ -251,6 +266,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("spam")
     .setDescription("Mark a Reddit post or comment as spam by ID")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addStringOption((o) =>
       o.setName("id").setDescription("Fullname or short ID").setRequired(true),
     ),
@@ -258,6 +274,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("unlock")
     .setDescription("Unlock a Reddit post or comment by ID")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addStringOption((o) =>
       o.setName("id").setDescription("Fullname or short ID").setRequired(true),
     ),
@@ -265,6 +282,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("nsfw")
     .setDescription("Mark a Reddit post or comment as NSFW by ID")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addStringOption((o) =>
       o.setName("id").setDescription("Fullname or short ID").setRequired(true),
     ),
@@ -272,6 +290,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("distinguish")
     .setDescription("Distinguish a Reddit post or comment as moderator by ID")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addStringOption((o) =>
       o.setName("id").setDescription("Fullname or short ID").setRequired(true),
     ),
@@ -279,6 +298,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("modlog")
     .setDescription("Show recent Reddit moderation actions for this channel")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addIntegerOption(limitOption)
     .addStringOption((o) =>
       o
@@ -297,7 +317,8 @@ export const slashCommands = [
           { name: "sticky", value: "sticky" },
           { name: "spam link", value: "spamlink" },
           { name: "spam comment", value: "spamcomment" },
-        ),
+        )
+        .setRequired(false),
     )
     .addStringOption((o) =>
       o
@@ -309,10 +330,12 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("audit")
     .setDescription("Show moderation actions executed from Discord")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addIntegerOption((o) =>
       o
         .setName("limit")
         .setDescription("How many entries to show (1-50)")
+        .setRequired(false)
         .setMinValue(1)
         .setMaxValue(50),
     )
@@ -334,7 +357,8 @@ export const slashCommands = [
           { name: "spam", value: "spam" },
           { name: "ban", value: "ban" },
           { name: "unban", value: "unban" },
-        ),
+        )
+        .setRequired(false),
     )
     .addUserOption((o) =>
       o
@@ -346,6 +370,7 @@ export const slashCommands = [
   new SlashCommandBuilder()
     .setName("user")
     .setDescription("Moderate Reddit users")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((sub) =>
       sub
         .setName("ban")
@@ -360,6 +385,7 @@ export const slashCommands = [
           o
             .setName("duration")
             .setDescription("Ban duration in days (omit for permanent)")
+            .setRequired(false)
             .setMinValue(1)
             .setMaxValue(999),
         )
@@ -384,6 +410,7 @@ export const slashCommands = [
           o
             .setName("activity_limit")
             .setDescription("How many recent items to show (1-10)")
+            .setRequired(false)
             .setMinValue(1)
             .setMaxValue(10),
         ),
