@@ -431,7 +431,7 @@ async function handleChatCommand(
             1,
           );
 
-          await interaction.channel.send({
+          await interaction.followUp({
             content: `🕘 Backfill post in r/${subreddit}`,
             embeds: response.embeds,
             components: response.components,
@@ -485,7 +485,7 @@ async function handleChatCommand(
               { pageLabel: "Threaded" },
               1,
             );
-            await interaction.channel.send({
+            await interaction.followUp({
               embeds: response.embeds,
               components: response.components,
             });
@@ -549,7 +549,7 @@ async function handleChatCommand(
               { pageLabel: "Threaded" },
               1,
             );
-            await interaction.channel.send({
+            await interaction.followUp({
               embeds: response.embeds,
               components: response.components,
             });
@@ -616,7 +616,7 @@ async function handleChatCommand(
               { window, pageLabel: "Threaded" },
               1,
             );
-            await interaction.channel.send({
+            await interaction.followUp({
               embeds: response.embeds,
               components: response.components,
             });
@@ -691,7 +691,7 @@ async function handleChatCommand(
               { pageLabel: `Search: ${query.slice(0, 40)} | ${itemType}` },
               1,
             );
-            await interaction.channel.send({
+            await interaction.followUp({
               embeds: response.embeds,
               components: response.components,
             });
@@ -758,7 +758,7 @@ async function handleChatCommand(
               { pageLabel: `Combined | ${itemType}` },
               1,
             );
-            await interaction.channel.send({
+            await interaction.followUp({
               embeds: response.embeds,
               components: response.components,
             });
@@ -2853,20 +2853,18 @@ function buildItemCardEmbed(input: {
     });
   }
 
-  if (input.mode !== "recent") {
-    embed.addFields({
-      name: "Reports",
-      value: String(input.item.reports),
-      inline: true,
-    });
+  embed.addFields({
+    name: "Reports",
+    value: String(input.item.reports),
+    inline: true,
+  });
 
-    if (input.item.reportSummary) {
-      embed.addFields({
-        name: "Report Reasons",
-        value: input.item.reportSummary,
-        inline: false,
-      });
-    }
+  if (input.item.reportSummary) {
+    embed.addFields({
+      name: "Report Reasons",
+      value: input.item.reportSummary,
+      inline: false,
+    });
   }
 
   if (input.item.externalUrl) {
