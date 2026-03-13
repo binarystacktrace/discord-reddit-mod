@@ -17,25 +17,49 @@
       "channelId": "1481693534753919157",
       "guildId": "1401538468479238194",
       "subreddit": "indianmemer",
-      "liveFeedType": "new",
+      "liveFeedType": "both",
       "liveItemType": "posts",
       "liveMinReports": 0,
       "liveDigestMinutes": 0,
       "liveLastSeenNew": "t3_1rs2y7a",
-      "liveQueueSeenIds": [],
-      "updatedAt": "2026-03-12T16:54:38.109Z"
+      "liveQueueSeenIds": [
+        "t3_1rrut8a",
+        "t3_1kpl4sn",
+        "t3_1kpdvmm",
+        "t1_msx0e1h",
+        "t1_msww9jj",
+        "t1_mswezvf",
+        "t1_msvmyig",
+        "t3_1kp4d8i",
+        "t1_mstnrj5",
+        "t3_1kowuka",
+        "t3_1rs632y"
+      ],
+      "updatedAt": "2026-03-12T23:12:26.479Z"
     },
     "1481722051319566375": {
       "channelId": "1481722051319566375",
       "guildId": "533222954444783617",
       "subreddit": "indianmemer",
-      "liveFeedType": "new",
-      "liveItemType": "comments",
+      "liveFeedType": "both",
+      "liveItemType": "posts",
       "liveMinReports": 0,
       "liveDigestMinutes": 0,
-      "liveLastSeenNew": "t1_oa4kuc0",
-      "liveQueueSeenIds": [],
-      "updatedAt": "2026-03-12T21:03:52.752Z"
+      "liveLastSeenNew": "t3_1rs2y7a",
+      "liveQueueSeenIds": [
+        "t3_1rrut8a",
+        "t3_1kpl4sn",
+        "t3_1kpdvmm",
+        "t1_msx0e1h",
+        "t1_msww9jj",
+        "t1_mswezvf",
+        "t1_msvmyig",
+        "t3_1kp4d8i",
+        "t1_mstnrj5",
+        "t3_1kowuka",
+        "t3_1rs632y"
+      ],
+      "updatedAt": "2026-03-12T23:10:06.004Z"
     }
   }
 }
